@@ -1,28 +1,32 @@
-var http = require('http')
-var createHandler = require('github-webhook-handler')
-var handler = createHandler({ path: '/webhook', secret: 'myhashsecret' })
+var http = require("http");
+var require = require("request");
+var createHandler = require("github-webhook-handler");
+var handler = createHandler({ path: "/webhook", secret: "myhashsecret" });
 
 http.createServer(function (req, res) {
   handler(req, res, function (err) {
-    res.statusCode = 404
-    res.end('no such location')
-  })
-}).listen(process.env.PORT)
+    res.statusCode = 404;
+    res.end("no such location");
+  });
+}).listen(process.env.PORT);
 
-handler.on('error', function (err) {
-  console.error('Error:', err.message)
-})
+handler.on("push", function (event) {
+  // Grab the information we need
+  var repo = event.payload.repository.full_name;;
+  var isPrivate = event.payload.repository.private;
 
-handler.on('push', function (event) {
-  console.log('Received a push event for %s to %s',
-    event.payload.repository.name,
-    event.payload.ref)
-})
+  var ref = event.payload.ref;
+  var sha = event.payload.after;
 
-handler.on('issues', function (event) {
-  console.log('Received an issue event for %s action=%s: #%d %s',
-    event.payload.repository.name,
-    event.payload.action,
-    event.payload.issue.number,
-    event.payload.issue.title)
-})
+  // Ignore private repos and branches other than master for now
+  if (isPrivate || ref != "/refs/head/master") return;
+
+  var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
+  request(configUrl, function(err, resp, body) {
+    // If .impconfig isn't present, there isn't anything we can do.
+
+    if (resp.statusCode != 200) return;
+
+    console.log(body);
+  });
+});
