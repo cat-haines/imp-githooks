@@ -1,5 +1,5 @@
 var http = require("http");
-var require = require("request");
+var request = require("request");
 var createHandler = require("github-webhook-handler");
 var handler = createHandler({ path: "/webhook", secret: "myhashsecret" });
 
