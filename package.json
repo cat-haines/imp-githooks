@@ -1,0 +1,29 @@
+{
+  "name": "imp-githooks",
+  "version": "0.1.0",
+  "description": "Set of GitHub webhooks for Electric Imp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/matt-haines/imp-githooks.git"
+  },
+  "keywords": [
+    "git",
+    "github",
+    "electricimp",
+    "electric imp",
+    "iot",
+    "webhooks",
+    "ci"
+  ],
+  "author": "Matt Haines",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/matt-haines/imp-githooks/issues"
+  },
+  "homepage": "https://github.com/matt-haines/imp-githooks#readme"
+}
