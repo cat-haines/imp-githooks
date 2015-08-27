@@ -5,4 +5,4 @@ http.createServer(function (req, res) {
 
   res.statusCode = 200;
   res.end('OK');
-}).listen(5000);
+}).listen(process.env.PORT);
