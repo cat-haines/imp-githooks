@@ -71,35 +71,35 @@ handler.on("push", function (event) {
         imp.createModelRevision(impconfig.modelId, model, function(err, data) {
           if (err) {
             if (err.code != "CompileFailed") {
-              console.log(colors.red("ERROR: " + err.message_short));
+              console.log("ERROR: " + err.message_short);
               return;
             }
 
             if (err.details.agent_errors) {
               for(var i = 0; i < err.details.agent_errors.length; i ++) {
                 var thisErr = err.details.agent_errors[i];
-                console.log(colors.red("ERROR: " + thisErr.error));
-                console.log("   at: " + config.get("agentFile") +":" + thisErr.row + " (col "+thisErr.column+")");
+                console.log("ERROR: " + thisErr.error);
+                console.log("   at: " + impconfig.agentFile +":" + thisErr.row + " (col "+thisErr.column+")");
               }
             }
 
             if (err.details.device_errors) {
               for(var i = 0; i < err.details.device_errors.length; i ++) {
                 var thisErr = err.details.device_errors[i];
-                console.log(colors.red("ERROR: " + thisErr.error));
-                console.log("   at: " + config.get("deviceFile") +":" + thisErr.row + " (col "+thisErr.column+")");
+                console.log("ERROR: " + thisErr.error);
+                console.log("   at: " + impconfig.deviceFile +":" + thisErr.row + " (col "+thisErr.column+")");
               }
             }
 
             return;
           }
 
-          imp.restartModel(config.get("modelId"), function(err, restartData) {
-            if (err) {
+          imp.restartModel(impconfig.modelId, function(restartErr, restartData) {
+            if (restartErr) {
               console.log("Warning: Could not restart model");
             }
 
-            console.log("Successfully created revision " + data.revision.version);
+            console.log("Successfully created revision " + restartData.revision.version);
           });
         });
       });
