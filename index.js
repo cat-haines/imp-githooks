@@ -27,12 +27,15 @@ handler.on("push", function (event) {
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
 
-  request(configUrl, function(err, resp, impconfig) {
+  request(configUrl, function(err, resp, impconfigFile) {
     // If .impconfig isn't present, there isn't anything we can do.
     if(resp.statusCode != 200) {
       console.log("Couldn't find .impconfig in root level of repository");
       return;
     }
+
+    // Parse the body..
+    var impconfig = JSON.parse(impconfigFile);
 
     // Make sure have the required data
     console.log(impconfig.modelId);
