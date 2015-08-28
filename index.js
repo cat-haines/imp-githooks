@@ -57,7 +57,7 @@ handler.on("push", function (event) {
         return;
       }
 
-      request(agentFileUrl, function(agentErr, agentRest, agentCode) {
+      request(agentFileUrl, function(agentErr, agentResp, agentCode) {
         if (agentResp.statusCode != 200) {
           console.log("Error fetching agent file: " + impconfig.agentFile);
           return;
