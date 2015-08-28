@@ -37,11 +37,6 @@ handler.on("push", function (event) {
     // Parse the body..
     var impconfig = JSON.parse(impconfigFile);
 
-    // Make sure have the required data
-    console.log(impconfig.modelId);
-    console.log(impconfig.deviceFile);
-    console.log(impconfig.agentFile);
-
     if (!impconfig.modelId || !impconfig.deviceFile || !impconfig.agentFile) {
       console.log("Invalid .impconfig - ensure modelId, deviceFile, and agentFile are present");
       return;
@@ -68,24 +63,24 @@ handler.on("push", function (event) {
           agent_code: agentCode
         };
 
-        imp.createModelRevision(impconfig.modelId, model, function(err, data) {
-          if (err) {
-            if (err.code != "CompileFailed") {
-              console.log("ERROR: " + err.message_short);
+        imp.createModelRevision(impconfig.modelId, model, function(revisionErr, revisionData) {
+          if (revisionErr) {
+            if (revisionErr.code != "CompileFailed") {
+              console.log("ERROR: " + revisionErr.message_short);
               return;
             }
 
-            if (err.details.agent_errors) {
-              for(var i = 0; i < err.details.agent_errors.length; i ++) {
-                var thisErr = err.details.agent_errors[i];
+            if (revisionErr.details.agent_errors) {
+              for(var i = 0; i < revisionErr.details.agent_errors.length; i ++) {
+                var thisErr = revisionErr.details.agent_errors[i];
                 console.log("ERROR: " + thisErr.error);
                 console.log("   at: " + impconfig.agentFile +":" + thisErr.row + " (col "+thisErr.column+")");
               }
             }
 
-            if (err.details.device_errors) {
-              for(var i = 0; i < err.details.device_errors.length; i ++) {
-                var thisErr = err.details.device_errors[i];
+            if (revisionErr.details.device_errors) {
+              for(var i = 0; i < revisionErr.details.device_errors.length; i ++) {
+                var thisErr = revisionErr.details.device_errors[i];
                 console.log("ERROR: " + thisErr.error);
                 console.log("   at: " + impconfig.deviceFile +":" + thisErr.row + " (col "+thisErr.column+")");
               }
@@ -98,8 +93,8 @@ handler.on("push", function (event) {
             if (restartErr) {
               console.log("Warning: Could not restart model");
             }
-            console.log(restartData);
-            // console.log("Successfully created revision " + restartData.revision.version);
+
+            console.log("Successfully created revision " + revisionData.revision.version);
           });
         });
       });
