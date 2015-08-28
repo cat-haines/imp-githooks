@@ -18,6 +18,10 @@ handler.on("push", function (event) {
   var ref = event.payload.ref;
   var sha = event.payload.after;
 
+  console.log(repo);
+  console.log(ref);
+  console.log(isPrivate);
+
   // Ignore private repos and branches other than master for now
   if(isPrivate || ref != "/refs/heads/master") return;
 
