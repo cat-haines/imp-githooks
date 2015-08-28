@@ -2,6 +2,12 @@
 
 The imp-githooks project is an incredibly simple webserver designed to be used with [GitHub's Webhooks](https://developer.github.com/webhooks/) to deploy code to your Electric Imp devices whenever you push changes to the master branch of a tracked repository.
 
+## Limitations
+
+At present, the imp-githooks project *only* works for public repositories, and only tracks the master branch of the project.
+
+This project is *not* complete, and is intended to act as a starting point for more complex Electric Imp + GitHub CI tools.
+
 ## Installation
 
 This installation guide will demonstrate how to setup and configure this project on a free [Heroku](heroku.com) instance. Before getting started you will need to ensure you have done the following:
