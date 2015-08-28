@@ -35,6 +35,10 @@ handler.on("push", function (event) {
     }
 
     // Make sure have the required data
+    console.log(impconfig.modelId);
+    console.log(impconfig.deviceFile);
+    console.log(impconfig.agentFile);
+
     if (!impconfig.modelId || !impconfig.deviceFile || !impconfig.agentFile) {
       console.log("Invalid .impconfig - ensure modelId, deviceFile, and agentFile are present");
       return;
