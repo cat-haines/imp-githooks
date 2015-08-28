@@ -4,8 +4,13 @@ var createHandler = require("github-webhook-handler");
 var handler = createHandler({ path: "/webhook", secret: "myhashsecret" });
 
 // Set BUILD_API_KEY with: `heroku config:set BUILD_API_KEY=YourApiKey`
+console.log("*****");
 var Imp = require("imp-api");
+console.log(Imp);
+
+console.log("*****");
 var imp = Imp({ apiKey: process.env.BUILD_API_KEY });
+console.log(imp);
 
 http.createServer(function (req, res) {
   handler(req, res, function (err) {
