@@ -19,13 +19,13 @@ handler.on("push", function (event) {
   var sha = event.payload.after;
 
   // Ignore private repos and branches other than master for now
-  if (isPrivate || ref != "/refs/head/master") return;
+  if(isPrivate || ref != "/refs/head/master") return;
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
   request(configUrl, function(err, resp, body) {
     // If .impconfig isn't present, there isn't anything we can do.
 
-    if (resp.statusCode != 200) return;
+    if(resp.statusCode != 200) return;
 
     console.log(body);
   });
