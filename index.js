@@ -30,7 +30,7 @@ handler.on("push", function (event) {
   request(configUrl, function(err, resp, impconfig) {
     // If .impconfig isn't present, there isn't anything we can do.
     if(resp.statusCode != 200) {
-      console.log("Couldn't find .impconfig in root level of repository";
+      console.log("Couldn't find .impconfig in root level of repository");
       return;
     }
 
