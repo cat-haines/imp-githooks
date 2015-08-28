@@ -98,8 +98,8 @@ handler.on("push", function (event) {
             if (restartErr) {
               console.log("Warning: Could not restart model");
             }
-
-            console.log("Successfully created revision " + restartData.revision.version);
+            consle.log(restartData);
+            // console.log("Successfully created revision " + restartData.revision.version);
           });
         });
       });
