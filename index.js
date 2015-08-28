@@ -22,7 +22,10 @@ handler.on("push", function (event) {
   if(isPrivate || ref != "/refs/heads/master") return;
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
+  console.log(configUrl);
+
   request(configUrl, function(err, resp, body) {
+    console.log(resp);
     // If .impconfig isn't present, there isn't anything we can do.
 
     if(resp.statusCode != 200) return;
