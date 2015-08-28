@@ -1,7 +1,9 @@
 var http = require("http");
 var request = require("request");
 var createHandler = require("github-webhook-handler");
-var handler = createHandler({ path: "/webhook", secret: "myhashsecret" });
+
+// Set GIT_PUSH_SECRET with: `heroku config:set GIT_PUSH_SECRET=YourSecret`
+var handler = createHandler({ path: "/webhook", secret: process.env.GIT_PUSH_SECRET });
 
 // Set BUILD_API_KEY with: `heroku config:set BUILD_API_KEY=YourApiKey`
 var Imp = require("imp-api");
