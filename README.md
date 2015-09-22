@@ -4,8 +4,6 @@ The imp-githooks project is an incredibly simple webserver designed to be used w
 
 ## Limitations
 
-At present, the imp-githooks project *only* works for public repositories, and only tracks the master branch of the project.
-
 This project is *not* complete, and is intended to act as a starting point for more complex Electric Imp + GitHub CI tools.
 
 ## Installation
@@ -34,6 +32,8 @@ $ git push heroku master
 $ heroku ps:scale web=1
 $ heroku config:set BUILD_API_KEY=BuildApiKey
 $ heroku config:set GIT_PUSH_SECRET=YourSecret
+$ heroku config:set GIT_USER=GitHubUserName
+$ heroku config:set GIT_TOKEN=GitHubToken
 ```
 
 **NOTE:** We'll use the GIT_PUSH_SECRET when setting up our GitHub webhook. It should be something unique and difficult to guess.
