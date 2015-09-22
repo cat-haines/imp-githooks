@@ -2,12 +2,18 @@ var http = require("http");
 var request = require("request");
 var createHandler = require("github-webhook-handler");
 
-// Set GIT_PUSH_SECRET with: `heroku config:set GIT_PUSH_SECRET=YourSecret`
-var handler = createHandler({ path: "/webhook", secret: process.env.GIT_PUSH_SECRET });
+// Grab the config data
+var buildApiKey = process.env.BUILD_API_KEY;      // heroku config:set BUILD_API_KEY=apiKey
+var gitPushSecret = process.env.GIT_PUSH_SECRET;  // heroku config:set GIT_PUSH_SECRET=secret
+var gitUser = process.env.GIT_USER;               //heroku config:set GIT_USER=username
+var gitToken = process.env.GIT_TOKEN;             // heroku config:set GIT_TOKEN=token
 
-// Set BUILD_API_KEY with: `heroku config:set BUILD_API_KEY=YourApiKey`
+// Instantiate the imp object
 var Imp = require("imp-api");
-var imp = new Imp({ apiKey: process.env.BUILD_API_KEY });
+var imp = new Imp({ apiKey: buildApiKey });
+
+// Instantiate the GitHook server
+var handler = createHandler({ path: "/webhook", secret: gitPushSecret });
 
 http.createServer(function (req, res) {
   handler(req, res, function (err) {
@@ -16,6 +22,7 @@ http.createServer(function (req, res) {
   });
 }).listen(process.env.PORT);
 
+// Specify the push functionality
 handler.on("push", function (event) {
   // Grab the information we need
   var repo = event.payload.repository.full_name;;
@@ -29,7 +36,14 @@ handler.on("push", function (event) {
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
 
-  request(configUrl, function(err, resp, impconfigFile) {
+  request({
+    url: configUrl,
+    auth: {
+      "user": gitUser,
+      "pass": gitToken,
+      "sendImmediately": true
+    }
+  }, function(err, resp, impconfigFile) {
     // If .impconfig isn't present, there isn't anything we can do.
     if(resp.statusCode != 200) {
       console.log("Couldn't find .impconfig in root level of repository");
@@ -48,13 +62,27 @@ handler.on("push", function (event) {
     var deviceFileUrl = "https://raw.githubusercontent.com/" + repo + "/master/" + impconfig.deviceFile;
     var agentFileUrl = "https://raw.githubusercontent.com/" + repo + "/master/" + impconfig.agentFile;
 
-    request(deviceFileUrl, function(deviceErr, deviceResp, deviceCode) {
+    request({
+      url: deviceFileUrl,
+      auth: {
+        "user": gitUser,
+        "pass": gitToken,
+        "sendImmediately": true
+      }
+    }, function(deviceErr, deviceResp, deviceCode) {
       if (deviceResp.statusCode != 200) {
         console.log("Error fetching device file: " + impconfig.deviceFile);
         return;
       }
 
-      request(agentFileUrl, function(agentErr, agentResp, agentCode) {
+      request({
+        url: deviceFileUrl,
+        auth: {
+          "user": gitUser,
+          "pass": gitToken,
+          "sendImmediately": true
+        }
+      }, function(agentErr, agentResp, agentCode) {
         if (agentResp.statusCode != 200) {
           console.log("Error fetching agent file: " + impconfig.agentFile);
           return;
