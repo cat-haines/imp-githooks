@@ -4,27 +4,31 @@ The imp-githooks project is an incredibly simple webserver designed to be used w
 
 ## Limitations
 
-This project is *not* complete, and is intended to act as a starting point for more complex Electric Imp + GitHub CI tools.
+This project is primairly aimed as a proof of concept, and intended to act as a starting point for more complex Electric Imp + GitHub CI tools.
 
-## Installation
+### Requirements
 
-This installation guide will demonstrate how to setup and configure this project on a free [Heroku](heroku.com) instance. Before getting started you will need to ensure you have done the following:
+This guide will help you setup and configure a simple webserver on a free Heroku instance to process GitHub Webhooks. You will need the following:
 
-- Installed [Node.js and npm](https://docs.npmjs.com/getting-started/installing-node)
-- Created a [Heroku account](https://signup.heroku.com/login)
-- Installed the [Heroku Toolbelt](https://toolbelt.heroku.com/)
-- Installed the [imp-cli](https://github.com/matt-haines/imp-cli#installation)
-- Copied your [Build API key](https://electricimp.com/docs/buildapi/keys/)
-  - **Note**: We recommend you create a separate Build API key for use with imp-githooks.
+- [Node.js and npm](https://docs.npmjs.com/getting-started/installing-node)
+- [A Heroku account](https://signup.heroku.com/login)
+- [The Heroku Toolbelt](https://toolbelt.heroku.com/)
+- [An Electric Imp account](https://ide.electricimp.com)
+- [An Electric Imp Build API Key*](https://electricimp.com/docs/buildapi/keys/)
+- [The imp-cli](https://github.com/matt-haines/imp-cli#installation)
+- [A GitHub account](https://github.com/join)
+- [A GitHub token*](https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
 
-### Clone the imp-githooks repository
+\***NOTE:** We recommend you create seperate API Keys and tokens for use with imp-githooks.
+
+### Step 1: Clone the imp-githooks repository
 
 ```bash
 $ git clone git@github.com:matt-haines/imp-githooks.git
 $ cd imp-webhooks
 ```
 
-### Create and configure the Heroku app
+### Step 2: Create and configure the Heroku app
 
 ```bash
 $ heroku create
@@ -32,11 +36,11 @@ $ git push heroku master
 $ heroku ps:scale web=1
 $ heroku config:set BUILD_API_KEY=BuildApiKey
 $ heroku config:set GIT_PUSH_SECRET=YourSecret
-$ heroku config:set GIT_USER=GitHubUserName
-$ heroku config:set GIT_TOKEN=GitHubToken
+$ heroku config:set GIT_USER=YourGitHubUserName
+$ heroku config:set GIT_TOKEN=YourGitHubToken
 ```
 
-**NOTE:** We'll use the GIT_PUSH_SECRET when setting up our GitHub webhook. It should be something unique and difficult to guess.
+We'll use the GIT_PUSH_SECRET when setting up our GitHub webhook. It should be something unique and difficult to guess.
 
 When you run the `heroku create` command, it should return with the URL of your app (in the example below it is https://damp-inlet-8875.herokuapp.com/):
 
@@ -47,7 +51,7 @@ https://damp-inlet-8875.herokuapp.com/ | https://git.heroku.com/damp-inlet-8875.
 Git remote heroku added
 ```
 
-### Setup a Webhook in GitHub
+### Step 3: Setup a Webhook in GitHub
 
 - Browse your GitHub repository and click on "Settings" -> "Webhooks and services"
 - Click "Add Webhook"
