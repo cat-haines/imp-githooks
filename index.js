@@ -37,7 +37,7 @@ function githubRequest(url, callback) {
     }
 
     callback(err, resp, data);
-  };
+  });
 }
 
 // Specify the push functionality
