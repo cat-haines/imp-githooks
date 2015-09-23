@@ -5,7 +5,7 @@ var createHandler = require("github-webhook-handler");
 // Grab the config data
 var buildApiKey = process.env.BUILD_API_KEY;      // heroku config:set BUILD_API_KEY=apiKey
 var gitPushSecret = process.env.GIT_PUSH_SECRET;  // heroku config:set GIT_PUSH_SECRET=secret
-var gitUser = process.env.GIT_USER;               //heroku config:set GIT_USER=username
+var gitUser = process.env.GIT_USER;               // heroku config:set GIT_USER=username
 var gitToken = process.env.GIT_TOKEN;             // heroku config:set GIT_TOKEN=token
 
 // Instantiate the imp object
