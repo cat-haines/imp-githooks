@@ -22,6 +22,24 @@ http.createServer(function (req, res) {
   });
 }).listen(process.env.PORT);
 
+function githubRequest(url, callback) {
+  request({
+    url: url,
+    auth: {
+      "user": gitUser,
+      "pass": gitToken,
+      "sendImmediately": true
+    }
+  }, function(err, resp, data) {
+    if (resp.statusCode != 200) {
+      console.log("Error retreiving " + url);
+      return;
+    }
+
+    callback(err, resp, data);
+  };
+}
+
 // Specify the push functionality
 handler.on("push", function (event) {
   // Grab the information we need
@@ -36,20 +54,7 @@ handler.on("push", function (event) {
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
 
-  request({
-    url: configUrl,
-    auth: {
-      "user": gitUser,
-      "pass": gitToken,
-      "sendImmediately": true
-    }
-  }, function(err, resp, impconfigFile) {
-    // If .impconfig isn't present, there isn't anything we can do.
-    if(resp.statusCode != 200) {
-      console.log("Couldn't find .impconfig in root level of repository");
-      return;
-    }
-
+  githubRequest(configUrl, function(err, resp, impconfigFile) {
     // Parse the body..
     var impconfig = JSON.parse(impconfigFile);
 
@@ -58,41 +63,20 @@ handler.on("push", function (event) {
       return;
     }
 
-    // Fetch the code
+    // Build the URLs to fetch the files
     var deviceFileUrl = "https://raw.githubusercontent.com/" + repo + "/master/" + impconfig.deviceFile;
     var agentFileUrl = "https://raw.githubusercontent.com/" + repo + "/master/" + impconfig.agentFile;
 
-    request({
-      url: deviceFileUrl,
-      auth: {
-        "user": gitUser,
-        "pass": gitToken,
-        "sendImmediately": true
-      }
-    }, function(deviceErr, deviceResp, deviceCode) {
-      if (deviceResp.statusCode != 200) {
-        console.log("Error fetching device file: " + impconfig.deviceFile);
-        return;
-      }
-
-      request({
-        url: deviceFileUrl,
-        auth: {
-          "user": gitUser,
-          "pass": gitToken,
-          "sendImmediately": true
-        }
-      }, function(agentErr, agentResp, agentCode) {
-        if (agentResp.statusCode != 200) {
-          console.log("Error fetching agent file: " + impconfig.agentFile);
-          return;
-        }
-
+    // Fetch the agent and device code:
+    githubRequest(deviceFileUrl, function(deviceErr, deviceResp, deviceCode) {
+      githubRequest(agentFileUrl, function(agentErr, agentResp, agentCode) {
+        // Build the model object
         var model = {
           device_code: deviceCode,
           agent_code: agentCode
         };
 
+        // Make a new revision
         imp.createModelRevision(impconfig.modelId, model, function(revisionErr, revisionData) {
           if (revisionErr) {
             if (revisionErr.code != "CompileFailed") {
@@ -100,6 +84,7 @@ handler.on("push", function (event) {
               return;
             }
 
+            // Log errors (if they exist)
             if (revisionErr.details.agent_errors) {
               for(var i = 0; i < revisionErr.details.agent_errors.length; i ++) {
                 var thisErr = revisionErr.details.agent_errors[i];
@@ -119,6 +104,7 @@ handler.on("push", function (event) {
             return;
           }
 
+          // Restart the model so code runs on all the devices
           imp.restartModel(impconfig.modelId, function(restartErr, restartData) {
             if (restartErr) {
               console.log("Warning: Could not restart model");
@@ -131,3 +117,5 @@ handler.on("push", function (event) {
     });
   });
 });
+
+
