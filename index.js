@@ -42,6 +42,7 @@ function githubRequest(url, callback) {
 
 // Specify the push functionality
 handler.on("push", function (event) {
+  console.log("In Push");
   // Grab the information we need
   var repo = event.payload.repository.full_name;;
   var isPrivate = event.payload.repository.private;
