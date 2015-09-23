@@ -53,7 +53,7 @@ handler.on("push", function (event) {
   if(isPrivate || ref !== "refs/heads/master") return;
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
-
+  console.log(configUrl);
   githubRequest(configUrl, function(err, resp, impconfigFile) {
     // Parse the body..
     var impconfig = JSON.parse(impconfigFile);
@@ -67,6 +67,9 @@ handler.on("push", function (event) {
     var deviceFileUrl = "https://raw.githubusercontent.com/" + repo + "/master/" + impconfig.deviceFile;
     var agentFileUrl = "https://raw.githubusercontent.com/" + repo + "/master/" + impconfig.agentFile;
 
+    console.log(deviceFileUrl);
+    console.log(agentFileUrl);
+
     // Fetch the agent and device code:
     githubRequest(deviceFileUrl, function(deviceErr, deviceResp, deviceCode) {
       githubRequest(agentFileUrl, function(agentErr, agentResp, agentCode) {
@@ -75,6 +78,8 @@ handler.on("push", function (event) {
           device_code: deviceCode,
           agent_code: agentCode
         };
+
+        console.log(model);
 
         // Make a new revision
         imp.createModelRevision(impconfig.modelId, model, function(revisionErr, revisionData) {
