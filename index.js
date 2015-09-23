@@ -42,16 +42,14 @@ function githubRequest(url, callback) {
 
 // Specify the push functionality
 handler.on("push", function (event) {
-  console.log("In Push");
   // Grab the information we need
   var repo = event.payload.repository.full_name;;
-  var isPrivate = event.payload.repository.private;
 
   var ref = event.payload.ref;
   var sha = event.payload.after;
 
   // Ignore private repos and branches other than master for now
-  if(isPrivate || ref !== "refs/heads/master") return;
+  if(ref !== "refs/heads/master") return;
 
   var configUrl = "https://raw.githubusercontent.com/" + repo + "/master/.impconfig";
   console.log(configUrl);
